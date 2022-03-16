@@ -5,15 +5,15 @@ npm i
 # Docker
 with Dockerfile
 ```
-docker build . -t nazwauz/ebiznes:latest
+docker build . -t user_name/ebiz:latest
 docker login
-docker push nazwauz/ebiznes:latest
+docker push user_name/ebiz:latest
 ```
 
 ## RUN image
 ```
 docker imges
-docker run -it nameuz/ml2021:latest /bin/bash
+docker run -it user_name/ebiz:latest /bin/bash
 ```
 -i dla inteaktywności
 
