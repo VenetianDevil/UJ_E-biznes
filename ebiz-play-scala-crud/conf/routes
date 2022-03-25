@@ -1,0 +1,22 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# https://www.playframework.com/documentation/latest/ScalaRouting
+# ~~~~
+
+GET     /items                       controllers.ItemsController.getAll
+GET     /items/:id                       controllers.ItemsController.getById(id: Long)
+PUT     /items/:id                       controllers.ItemsController.update(id: Long)
+DELETE     /items/:id                       controllers.ItemsController.delete(id: Long)
+POST     /items                       controllers.ItemsController.add
+
+GET     /users                       controllers.UsersController.getAll
+GET     /users/:id                       controllers.UsersController.getById(id: Long)
+PUT     /users/:id                       controllers.UsersController.update(id: Long)
+DELETE     /users/:id                       controllers.UsersController.delete(id: Long)
+POST     /users                       controllers.UsersController.add
+
+GET     /opinions                       controllers.OpinionsController.getAll
+GET     /opinions/:id                       controllers.OpinionsController.getById(id: Long)
+PUT     /opinions/:id                       controllers.OpinionsController.update(id: Long)
+DELETE     /opinions/:id                       controllers.OpinionsController.delete(id: Long)
+POST     /opinions                       controllers.OpinionsController.add

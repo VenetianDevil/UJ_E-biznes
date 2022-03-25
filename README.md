@@ -40,3 +40,11 @@ then reload *# User specific environment and startup programs*
 ```
 source ~/.bash_profile
 ```
+
+# scala play crud
+```
+cd ebiz-play-scala-crud
+sbt run
+```
+
+localhost:9000
