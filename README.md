@@ -48,3 +48,11 @@ sbt run
 ```
 
 localhost:9000
+
+
+# kotlin ktor slack bot
+run project and ngrok to listen for post requests from slack commands
+
+```
+ngrok http 8080
+```
