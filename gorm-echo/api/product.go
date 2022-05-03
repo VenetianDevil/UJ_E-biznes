@@ -42,11 +42,6 @@ func AddProduct(c echo.Context) error {
 		return c.NoContent(http.StatusNotFound)
 	}
 
-	// category := model.Category{}
-	// db.Model(&product).Association("Category").Find(&category)
-
-	fmt.Println(product)
-
 	result := db.Create(&product)
 	db.Preload("Category").Find(&product)
 	

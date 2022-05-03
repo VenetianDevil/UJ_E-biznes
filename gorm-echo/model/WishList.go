@@ -6,8 +6,8 @@ import (
 
 type WishList struct {
 	gorm.Model
-	ProductRefer	int
-	Product				Product `gorm:"foreignKey:ProductRefer"`
-	UserRefer 		int
-	User					User `gorm:"foreignKey:UserRefer"`
+	ProductID			int
+	Product				Product
+	UserID 				int
+	User					User
 }
