@@ -4,10 +4,17 @@ import (
 	"github.com/VenetianDevil/UJ_E-biznes/gorm-echo/api"
 
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 func Init() *echo.Echo {
 	e := echo.New()
+
+ //CORS
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{echo.GET, echo.HEAD, echo.PUT, echo.PATCH, echo.POST, echo.DELETE},
+	}))
 
 	e.GET("/", api.Home)
 
