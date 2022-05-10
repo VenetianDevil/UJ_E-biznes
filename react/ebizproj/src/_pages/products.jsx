@@ -1,14 +1,11 @@
-import { use } from 'bcrypt/promises';
 import React, { useEffect, useState } from 'react';
-import { Col, Row, Button, Modal, Form, Table } from 'react-bootstrap';
-import { forEach } from 'react-bootstrap/esm/ElementChildren';
-import { Link, useParams, setState } from "react-router-dom";
+import { Row} from 'react-bootstrap';
 import { LoaderComponent } from '../_components/LoaderComponent';
 import { ProductComponent } from '../_components/ProductComponent';
-import useServerService from '../_hooks/useServerService';
+import useProduct from '../_hooks/useProducts';
 
 function Products() {
-  const [getProducts] = useServerService();
+  const [getProducts] = useProduct();
   const [isLoading, setLoading] = useState(true);
   const [products, setProducts] = useState([])
 
@@ -19,23 +16,23 @@ function Products() {
         setProducts([...products, ...data]);
         console.log(products);
       })
+  }
+
+  useEffect(() => {
+    if (isLoading) {
+      getAll();
     }
-    
-    useEffect(() => {
-      if(isLoading){
-        getAll();
-      }
-    }, [isLoading])
-    
-    if (!!isLoading) {
-      return (<LoaderComponent></LoaderComponent>)
-    }
-    
-    console.log(products);
+  }, [isLoading])
+
+  if (!!isLoading) {
+    return (<LoaderComponent></LoaderComponent>)
+  }
+
+  console.log(products);
   return (
-    <section>
+    <Row >
       {products.map(product => <ProductComponent product={product}></ProductComponent>)}
-    </section>
+    </Row>
   )
 }
 

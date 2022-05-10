@@ -36,3 +36,28 @@
     transform: rotate(360deg);
   }
 }
+
+main{
+  position: relative !important;
+}
+
+/* --------------------- product ----------------- */
+
+.product-card{
+  background-color: #e0f8ff;
+  display: flex;
+  flex-direction: column;
+  border: 2px blue solid;
+  margin-bottom: 20px;
+  padding: 10px;
+}
+
+.product-card img{
+  mix-blend-mode: multiply;
+}
+
+/* ------------------ buttons ------------------------- */
+
+button{
+  position: relative !important;
+}

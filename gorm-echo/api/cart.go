@@ -64,3 +64,17 @@ func AddProdToCart(c echo.Context) error {
 
   return c.JSON(http.StatusOK, cart)
 }
+
+func OrderAndPay(c echo.Context) error {
+	db := db.DbManager()
+	carts := []model.Cart{}
+	uid := c.Param("uid")
+	
+	if err := db.Delete(&carts, "user_id = ?", uid).Error; err != nil {
+		panic(err)
+	}
+	
+	// spew.Dump(json.Marshal(carts))
+	// return c.JSON(http.StatusOK, carts)
+	return c.JSON(http.StatusOK, carts)
+}

@@ -29,6 +29,8 @@ func Init() *echo.Echo {
 
 	e.GET("/cart/:uid", api.GetCart)
 	e.POST("/cart", api.AddProdToCart)
+	
+	e.POST("/payment/:uid", api.OrderAndPay)
 
 	e.GET("/wishlist/:uid", api.GetWishList)
 	e.POST("/wishlist", api.AddProdToWishList)

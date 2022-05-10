@@ -1,6 +1,4 @@
 import React from 'react';
-import { Col, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import "../_styles/loader.css";
 
 export class LoaderComponent extends React.Component {
