@@ -1,17 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { environment } from '../environment.ts';
 
 import useServerService from './useServerService';
 
 function useCart(pid) {
   const [request] = useServerService()
-  const [productID, setProductId] = useState();
-
-  useEffect(() => {
-    if (!productID) {
-      setProductId(pid)
-    }
-  }, [productID]);
+  const [productID, setProductId] = useState(pid);
 
   function getCart(uid) {
     console.log('u getCart', uid);

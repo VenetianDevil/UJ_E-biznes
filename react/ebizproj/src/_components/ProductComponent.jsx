@@ -10,7 +10,7 @@ export class ProductComponent extends React.Component {
     super(props);
     this.state = {
       product: this.props.product,
-      cannotAddToCart: !!this.props.cannotAddToCart 
+      cannotAddToCart: !!this.props.cannotAddToCart
 
     };
   }
@@ -26,11 +26,11 @@ export class ProductComponent extends React.Component {
 
     return (
       <Col xs sm="3" >
-        <a className='product-card'>
-          <img src="https://bpgroup.lv/i/product_images/images/Z2000128435.jpg" />
+        <div className='product-card'>
+          <img src="https://bpgroup.lv/i/product_images/images/Z2000128435.jpg" alt='no product img' />
           <p>{product.Name}</p>
-          {cannotAddToCart ? null : <CartButtonComponent product={product}></CartButtonComponent> }
-          </a>
+          {cannotAddToCart ? null : <CartButtonComponent product={product}></CartButtonComponent>}
+        </div>
       </Col>
     );
   }

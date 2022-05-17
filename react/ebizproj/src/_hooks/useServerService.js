@@ -1,5 +1,3 @@
-import { environment } from '../environment.ts';
-
 function useServerService() {
   async function request(method, url, data) {
     console.log('gonna fetch')
@@ -29,10 +27,6 @@ function useServerService() {
     } catch (err) {
       console.error(err)
     }
-  }
-
-  function payment() {
-    return request('POST', `${environment.serverUrl}/payment`, {});
   }
 
   return [request];
