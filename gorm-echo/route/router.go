@@ -20,12 +20,15 @@ func Init() *echo.Echo {
 
 	e.GET("/users", api.GetUsers)
 	e.POST("/users", api.AddUser)
+	e.DELETE("/users/:uid", api.DeteleUser)
 
 	e.GET("/products", api.GetProducts)
 	e.POST("/products", api.AddProduct)
+	e.DELETE("/products/:pid", api.DeteleProduct)
 
 	e.GET("/categories", api.GetCategories)
 	e.POST("/categories", api.AddCategory)
+	e.DELETE("/categories/:cid", api.DeleteCategory)
 
 	e.GET("/cart/:uid", api.GetCart)
 	e.POST("/cart", api.AddProdToCart)
@@ -34,6 +37,7 @@ func Init() *echo.Echo {
 
 	e.GET("/wishlist/:uid", api.GetWishList)
 	e.POST("/wishlist", api.AddProdToWishList)
+	e.DELETE("/wishlist/:uid", api.CleanWishlist)
 
 	return e
 }

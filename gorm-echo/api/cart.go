@@ -70,8 +70,9 @@ func OrderAndPay(c echo.Context) error {
 	carts := []model.Cart{}
 	uid := c.Param("uid")
 	
-	if err := db.Delete(&carts, "user_id = ?", uid).Error; err != nil {
-		panic(err)
+	if err := db.Unscoped().Delete(&carts, "user_id = ?", uid).Error; err != nil {
+		fmt.Println(err)
+		return c.JSON(http.StatusNotFound, carts)
 	}
 	
 	// spew.Dump(json.Marshal(carts))

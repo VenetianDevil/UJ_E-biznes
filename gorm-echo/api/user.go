@@ -15,7 +15,8 @@ func GetUsers(c echo.Context) error {
 	users := []model.User{}
 	
 	if err := db.Find(&users).Error; err != nil {
-		panic(err)
+		fmt.Println(err)
+		return c.NoContent(http.StatusInternalServerError)
 	}
 	
 	// spew.Dump(json.Marshal(users))
@@ -28,18 +29,42 @@ func AddUser(c echo.Context) error {
 	
 	user := new(model.User)
   if err := c.Bind(user); err != nil {
-		return nil
+		fmt.Println(err)
+		return c.JSON(http.StatusBadRequest, user)
   }
-
+	
 	user.HashPassword()
-
+	
 	result := db.Create(&user)
-
+	
 	if result.Error != nil {
-		return nil
+		fmt.Println(result.Error)
+		return c.NoContent(http.StatusConflict)
+	}
+	
+	fmt.Println(user.ID)  
+	
+  return c.JSON(http.StatusOK, user)
+}
+
+func DeteleUser(c echo.Context) error {
+	db := db.DbManager()
+	users := []model.User{}
+	uid := c.Param("uid")
+	
+	response := db.Unscoped().Delete(&users, "id = ?", uid);
+
+	if err := response.Error; err != nil {
+		// panic(err)
+		fmt.Println(err)
+		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	fmt.Println(user.ID)  
-
-  return c.JSON(http.StatusOK, user)
+	if response.RowsAffected == 0 {
+		return c.NoContent(http.StatusNotFound)
+	}
+	
+	// spew.Dump(json.Marshal(carts))
+	// return c.JSON(http.StatusOK, carts)
+	return c.NoContent(http.StatusOK)
 }

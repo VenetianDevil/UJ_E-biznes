@@ -64,3 +64,18 @@ func AddProdToWishList(c echo.Context) error {
 
   return c.JSON(http.StatusOK, wishlist)
 }
+
+func CleanWishlist(c echo.Context) error {
+	db := db.DbManager()
+	wishlists := []model.WishList{}
+	uid := c.Param("uid")
+	
+	if err := db.Unscoped().Delete(&wishlists, "user_id = ?", uid).Error; err != nil {
+		fmt.Println(err)
+		return c.JSON(http.StatusNotFound, wishlists)
+	}
+	
+	// spew.Dump(json.Marshal(wishlist))
+	// return c.JSON(http.StatusOK, wishlist)
+	return c.JSON(http.StatusOK, wishlists)
+}

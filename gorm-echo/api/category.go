@@ -15,7 +15,8 @@ func GetCategories(c echo.Context) error {
 	categories := []model.Category{}
 	
 	if err := db.Find(&categories).Error; err != nil {
-		panic(err)
+		fmt.Println(err)
+		return c.NoContent(http.StatusInternalServerError)
 	}
 	
 	// spew.Dump(json.Marshal(categories))
@@ -28,16 +29,40 @@ func AddCategory(c echo.Context) error {
 	
 	category := new(model.Category)
   if err := c.Bind(category); err != nil {
-		return nil
+		fmt.Println(err)
+		return c.NoContent(http.StatusBadRequest)
   }
 
 	result := db.Create(&category)
 
 	if result.Error != nil {
-		return nil
+		fmt.Println(result.Error)
+		return c.NoContent(http.StatusConflict)
 	}
 
 	fmt.Println(category.ID)  
 
   return c.JSON(http.StatusOK, category)
+}
+
+func DeleteCategory(c echo.Context) error {
+	db := db.DbManager()
+	categories := []model.Category{}
+	cid := c.Param("cid")
+
+	response := db.Unscoped().Delete(&categories, "id = ?", cid)
+
+	if err := response.Error; err != nil {
+		// panic(err)
+		fmt.Println(err)
+		return c.NoContent(http.StatusInternalServerError)
+	}
+	
+	if response.RowsAffected == 0 {
+		return c.NoContent(http.StatusNotFound)
+	}
+	
+	// spew.Dump(json.Marshal(carts))
+	// return c.JSON(http.StatusOK, carts)
+	return c.NoContent(http.StatusOK)
 }

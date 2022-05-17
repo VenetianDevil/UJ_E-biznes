@@ -17,9 +17,10 @@
   },
   "homepage": "https://github.com/VenetianDevil/UJ_E-biznes#readme",
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.15.0",
+    "@typescript-eslint/eslint-plugin": "^5.26.0",
     "@typescript-eslint/parser": "^5.15.0",
-    "eslint": "^8.11.0",
+    "cypress": "^9.7.0",
+    "eslint": "^8.16.0",
     "eslint-plugin-react": "^7.29.4"
   }
 }

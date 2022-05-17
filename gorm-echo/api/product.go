@@ -15,15 +15,14 @@ func GetProducts(c echo.Context) error {
 	products := []model.Product{}
 	
 	if err := db.Find(&products).Error; err != nil {
-		panic(err)
+		fmt.Println(err)
+		return c.NoContent(http.StatusNotFound)
 	}
-
+	
 	for i := 0; i < len(products); i++ {
 		db.Preload("Category").Find(&products[i])
 	}
 	
-	// spew.Dump(json.Marshal(products))
-	// return c.JSON(http.StatusOK, products)
 	return c.JSON(http.StatusOK, products)
 }
 
@@ -33,24 +32,46 @@ func AddProduct(c echo.Context) error {
 	
 	product := new(model.Product)
   if err := c.Bind(product); err != nil {
-		panic(err)
-		// return nil
+		fmt.Println(err)
+		return c.NoContent(http.StatusNotFound)
   }
 	
 	category := new(model.Category)
 	if err := db.First(&category, product.CategoryID).Error; err != nil {
-		return c.NoContent(http.StatusNotFound)
+		fmt.Println(err)
+		return c.NoContent(http.StatusBadRequest)
 	}
 
 	result := db.Create(&product)
-	db.Preload("Category").Find(&product)
 	
 	if result.Error != nil {
-		panic(result.Error)
-		// return nil
+		fmt.Println(result.Error)
+		return c.NoContent(http.StatusInternalServerError)
 	}
-
+	
+	db.Preload("Category").Find(&product)
 	fmt.Println(product.ID)  
 
   return c.JSON(http.StatusOK, product)
+}
+
+func DeteleProduct(c echo.Context) error {
+	db := db.DbManager()
+	pid := c.Param("pid")
+
+	response := db.Unscoped().Delete(&model.Product{}, pid);
+	
+	if err := response.Error; err != nil {
+		// panic(err)
+		fmt.Println(err)
+		return c.NoContent(http.StatusInternalServerError)
+	}
+
+	if response.RowsAffected == 0 {
+		return c.NoContent(http.StatusNotFound)
+	}
+	
+	// spew.Dump(json.Marshal(carts))
+	// return c.JSON(http.StatusOK, carts)
+	return c.NoContent(http.StatusOK)
 }
