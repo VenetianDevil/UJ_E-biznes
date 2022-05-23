@@ -13,6 +13,8 @@ type User struct {
 	id					 int
 	Username     string	`gorm:"unique"`
 	PasswordHash string
+	Email				 string
+	Access_token string
 }
 
 var (

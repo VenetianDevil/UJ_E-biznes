@@ -9,6 +9,7 @@ import (
 
 func Init() *echo.Echo {
 	e := echo.New()
+	api.OauthConfigInit()
 
  //CORS
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -38,6 +39,11 @@ func Init() *echo.Echo {
 	e.GET("/wishlist/:uid", api.GetWishList)
 	e.POST("/wishlist", api.AddProdToWishList)
 	e.DELETE("/wishlist/:uid", api.CleanWishlist)
+
+	e.GET("/auth/login/google", api.HandleGoogleLogin)
+	e.GET("/auth/callback/google", api.HandleGoogleCallback)
+	e.GET("/auth/login/github", api.HandleGithubLogin)
+	e.GET("/auth/callback/github", api.HandleGithubCallback)
 
 	return e
 }

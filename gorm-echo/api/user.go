@@ -6,8 +6,15 @@ import (
 	"github.com/VenetianDevil/UJ_E-biznes/gorm-echo/model"
 	"net/http"
 	"fmt"
+	"os"
+	"io/ioutil"
+	"encoding/json"
 
 	"github.com/labstack/echo"
+
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
+	"golang.org/x/oauth2/github"
 )
 
 func GetUsers(c echo.Context) error {
@@ -67,4 +74,133 @@ func DeteleUser(c echo.Context) error {
 	// spew.Dump(json.Marshal(carts))
 	// return c.JSON(http.StatusOK, carts)
 	return c.NoContent(http.StatusOK)
+}
+
+// -------------------------- OAuth2 ------------------------
+
+var (
+	googleOauthConfig *oauth2.Config
+	githubOauthConfig *oauth2.Config
+	oauthStateString = "pseudo-random"
+)
+
+func OauthConfigInit() {
+	os.Setenv("GOOGLE_CLIENT_ID", "99738054409-qn160el7ichh2s6l3lqduogefh4rf1n6.apps.googleusercontent.com")
+	os.Setenv("GOOGLE_CLIENT_SECRET", "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")
+	os.Setenv("GITHUB_CLIENT_ID", "9f026e4f17827fd53a3b")
+	os.Setenv("GITHUB_CLIENT_SECRET", "18861bff981cb2a72f4371aabbd0eaae43543db0")
+
+	googleOauthConfig = &oauth2.Config{
+		RedirectURL:  "http://localhost:1323/auth/callback/google",
+		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
+		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
+		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
+		Endpoint:     google.Endpoint,
+	}
+
+	githubOauthConfig = &oauth2.Config{
+		RedirectURL:  "http://localhost:1323/auth/callback/github",
+		ClientID:     os.Getenv("GITHUB_CLIENT_ID"),
+		ClientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),
+		Scopes:       []string{"https://github.com/login/oauth/access_token"},
+		Endpoint:     github.Endpoint,
+	}
+}
+
+func HandleGoogleLogin(c echo.Context) error {
+	url := googleOauthConfig.AuthCodeURL(oauthStateString)
+	return c.Redirect(http.StatusTemporaryRedirect, url)
+}
+
+func HandleGoogleCallback(c echo.Context) error {
+	fmt.Println("context", c.FormValue("state"), c.FormValue("code"))
+	_, err := getUserInfoGoogle(c.FormValue("state"), c.FormValue("code"))
+	
+	if err != nil {
+		fmt.Println(err.Error())
+		c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000/");
+	}
+	
+	fmt.Println("back to react")
+	return c.Redirect(http.StatusSeeOther, "http://localhost:3000/");
+}
+
+func HandleGithubLogin(c echo.Context) error {
+	url := githubOauthConfig.AuthCodeURL(oauthStateString)
+	return c.Redirect(http.StatusTemporaryRedirect, url)
+}
+
+func HandleGithubCallback(c echo.Context) error {
+	fmt.Println("context", c.FormValue("state"), c.FormValue("code"))
+	_, err := getUserInfoGithub(c.FormValue("state"), c.FormValue("code"))
+	
+	if err != nil {
+		fmt.Println(err.Error())
+		c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000/");
+	}
+	
+	fmt.Println("back to react")
+	return c.Redirect(http.StatusSeeOther, "http://localhost:3000/");
+}
+
+func getUserInfoGoogle(state string, code string) ([]byte, error) {
+	if state != oauthStateString {
+		return nil, fmt.Errorf("invalid oauth state")
+	}
+	token, err := googleOauthConfig.Exchange(oauth2.NoContext, code)
+	if err != nil {
+		return nil, fmt.Errorf("code exchange failed: %s", err.Error())
+	}
+	
+	response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
+	fmt.Println(response)
+	if err != nil {
+		return nil, fmt.Errorf("failed getting user info: %s", err.Error())
+	}
+	// fmt.Println(response.Body)
+	defer response.Body.Close()
+	contents, err := ioutil.ReadAll(response.Body)
+	userinfo := new(model.User)
+	json.Unmarshal([]byte(string(contents)), &userinfo)
+
+	user := model.User{ Email: userinfo.Email, Access_token: token.AccessToken	}
+	
+	db := db.DbManager()
+	db.Create(&user)
+
+	fmt.Println(string(contents));
+	
+	if err != nil {
+		return nil, fmt.Errorf("failed reading response body: %s", err.Error())
+	}
+	return contents, nil
+}
+
+func getUserInfoGithub(state string, code string) ([]byte, error) {
+	if state != oauthStateString {
+		return nil, fmt.Errorf("invalid oauth state")
+	}
+	token, err := githubOauthConfig.Exchange(oauth2.NoContext, code)
+	if err != nil {
+		return nil, fmt.Errorf("code exchange failed: %s", err.Error())
+	}
+
+	fmt.Println(token.AccessToken)
+	// client := &http.Client{}
+	// req, err := http.NewRequest("GET", "https://www.googleapis.com/oauth2/v3/userinfo?access_token="+ token.AccessToken, nil)
+	// req.Header.Set("Authorization", "Bearer " + token.AccessToken)
+	// response, err := client.Do(req)
+	// fmt.Println(response)
+	
+	response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
+	fmt.Println(response)
+	if err != nil {
+		return nil, fmt.Errorf("failed getting user info: %s", err.Error())
+	}
+	defer response.Body.Close()
+	contents, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed reading response body: %s", err.Error())
+	}
+	return contents, nil
 }
