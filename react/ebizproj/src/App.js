@@ -12,19 +12,18 @@ import Products from './_pages/products';
 import Cart from './_pages/cart';
 import OrderSummary from './_pages/orderSummary';
 import SignIn from './_pages/signin';
+import Logged from './_pages/logged';
+import { NotificationContainer } from 'react-notifications';
+import useAuth from './_hooks/useAuth';
+import Logout from './_pages/logout';
 
 function App() {
 
-  // const [loggedIn, setLoggedIn] = useState(!!auth.currentUserValue());
-  // const [isAdmin, setIsAdmin] = useState(!!auth.currentUserValue() && auth.currentUserValue().is_admin);
   const [currentUrl, setCurrentUrl] = useState(useLocation().pathname);
   const handleSelect = (href) => { setCurrentUrl(href) };
 
-  // function setAppState() {
-  //   console.log('app - update state', !!auth.currentUserValue(), !!auth.currentUserValue() && auth.currentUserValue().is_admin)
-  //   setLoggedIn(!!auth.currentUserValue());
-  //   setIsAdmin(!!auth.currentUserValue() && auth.currentUserValue().is_admin);
-  // }
+  const [isLoggedIn, login, logout, currentUserValue] = useAuth();
+  const [refresh, forceRefresh] = useState();
 
   return (
     <div className="App">
@@ -40,12 +39,11 @@ function App() {
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Nav className='ms-auto' activeKey={currentUrl} onSelect={handleSelect}>
                 <Navbar.Collapse id="basic-navbar-nav" >
-                  {/* {!!loggedIn ? <Navbar.Text>{auth.currentUserValue().username} </Navbar.Text> : null} */}
+                  {currentUserValue() ? <Navbar.Text>{currentUserValue() ? currentUserValue().Username : ''} </Navbar.Text> : null}
                   <Nav.Link href="/products">Products</Nav.Link>
                   <Nav.Link href="/cart">Cart</Nav.Link>
-                  <Nav.Link href="/signin">Sign in</Nav.Link>
-                  {/* {!!loggedIn && !auth.currentUserValue().is_admin ? <Nav.Link href="/account">Account</Nav.Link> : ''}
-                    {!loggedIn ? <Nav.Link href="/login">Login</Nav.Link> : <Logout setAppState={setAppState}></Logout>} */}
+                  {!currentUserValue() ? <Nav.Link href="/signin">Sign in</Nav.Link> : null}
+                  {currentUserValue() ? <Nav.Link href="logout">Logout</Nav.Link> : null}
                 </Navbar.Collapse>
               </Nav>
             </Nav>
@@ -61,6 +59,8 @@ function App() {
             <Route path="cart" element={<Cart />} />
             <Route path="cart/ordered" element={<OrderSummary></OrderSummary>} />
             <Route path="signin" element={<SignIn />} />
+            <Route path='logged' element={<Logged />} />
+            <Route path='logout' element={<Logout callback={forceRefresh} />} />
           </Routes>
         </Container>
       </main>
@@ -68,6 +68,7 @@ function App() {
       <footer className="mt-5">
 
       </footer>
+      <NotificationContainer />
 
     </div>
   );

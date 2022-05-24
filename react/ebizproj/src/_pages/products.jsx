@@ -31,7 +31,7 @@ function Products() {
   console.log(products);
   return (
     <Row >
-      {products.map(product => <ProductComponent product={product}></ProductComponent>)}
+      {products.map(product => <ProductComponent key={product.ID} product={product}></ProductComponent>)}
     </Row>
   )
 }

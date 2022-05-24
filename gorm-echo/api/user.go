@@ -9,12 +9,14 @@ import (
 	"os"
 	"io/ioutil"
 	"encoding/json"
+	"time"
 
 	"github.com/labstack/echo"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"golang.org/x/oauth2/github"
+
 )
 
 func GetUsers(c echo.Context) error {
@@ -114,15 +116,32 @@ func HandleGoogleLogin(c echo.Context) error {
 
 func HandleGoogleCallback(c echo.Context) error {
 	fmt.Println("context", c.FormValue("state"), c.FormValue("code"))
-	_, err := getUserInfoGoogle(c.FormValue("state"), c.FormValue("code"))
+	contents, err := getUserInfoGoogle(c.FormValue("state"), c.FormValue("code"))
 	
 	if err != nil {
 		fmt.Println(err.Error())
 		c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000/");
 	}
 	
-	fmt.Println("back to react")
-	return c.Redirect(http.StatusSeeOther, "http://localhost:3000/");
+	userinfo := new(model.User)
+	json.Unmarshal([]byte(string(contents)), &userinfo)
+
+	user := model.UserClean{ Username: userinfo.Email, Email: userinfo.Email}
+	user.GenerateToken()
+	
+	userStr, err := json.Marshal(user)
+	fmt.Println("clean user str", string(userStr))
+
+	cookieUser := new(http.Cookie)
+	cookieUser.Path = "/logged"
+	cookieUser.Name = "user"
+	cookieUser.Value = string(userStr)
+	cookieUser.Expires = time.Now().Add(30*time.Second)
+	cookieUser.HttpOnly = false
+	cookieUser.Secure = true
+	c.SetCookie(cookieUser)
+	
+	return c.Redirect(http.StatusSeeOther, "http://localhost:3000/logged");
 }
 
 func HandleGithubLogin(c echo.Context) error {
@@ -132,15 +151,32 @@ func HandleGithubLogin(c echo.Context) error {
 
 func HandleGithubCallback(c echo.Context) error {
 	fmt.Println("context", c.FormValue("state"), c.FormValue("code"))
-	_, err := getUserInfoGithub(c.FormValue("state"), c.FormValue("code"))
+	contents, err := getUserInfoGithub(c.FormValue("state"), c.FormValue("code"))
 	
 	if err != nil {
 		fmt.Println(err.Error())
 		c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000/");
 	}
+
+	userinfo := new(model.UserGithub)
+	json.Unmarshal([]byte(string(contents)), &userinfo)
+
+	user := model.UserClean{ Username: userinfo.Login, Email: userinfo.Email}
+	user.GenerateToken()
 	
-	fmt.Println("back to react")
-	return c.Redirect(http.StatusSeeOther, "http://localhost:3000/");
+	userStr, err := json.Marshal(user)
+	fmt.Println("clean user str", string(userStr))
+
+	cookieUser := new(http.Cookie)
+	cookieUser.Path = "/logged"
+	cookieUser.Name = "user"
+	cookieUser.Value = string(userStr)
+	cookieUser.Expires = time.Now().Add(30*time.Second)
+	cookieUser.HttpOnly = false
+	cookieUser.Secure = true
+	c.SetCookie(cookieUser)
+	
+	return c.Redirect(http.StatusSeeOther, "http://localhost:3000/logged")
 }
 
 func getUserInfoGoogle(state string, code string) ([]byte, error) {
@@ -153,22 +189,19 @@ func getUserInfoGoogle(state string, code string) ([]byte, error) {
 	}
 	
 	response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
-	fmt.Println(response)
+
 	if err != nil {
 		return nil, fmt.Errorf("failed getting user info: %s", err.Error())
 	}
-	// fmt.Println(response.Body)
 	defer response.Body.Close()
 	contents, err := ioutil.ReadAll(response.Body)
+
 	userinfo := new(model.User)
 	json.Unmarshal([]byte(string(contents)), &userinfo)
 
-	user := model.User{ Email: userinfo.Email, Access_token: token.AccessToken	}
-	
+	user := model.User{ Username: userinfo.Email, Email: userinfo.Email, Access_token: token.AccessToken	}
 	db := db.DbManager()
 	db.Create(&user)
-
-	fmt.Println(string(contents));
 	
 	if err != nil {
 		return nil, fmt.Errorf("failed reading response body: %s", err.Error())
@@ -180,25 +213,30 @@ func getUserInfoGithub(state string, code string) ([]byte, error) {
 	if state != oauthStateString {
 		return nil, fmt.Errorf("invalid oauth state")
 	}
+
 	token, err := githubOauthConfig.Exchange(oauth2.NoContext, code)
 	if err != nil {
 		return nil, fmt.Errorf("code exchange failed: %s", err.Error())
 	}
 
-	fmt.Println(token.AccessToken)
-	// client := &http.Client{}
-	// req, err := http.NewRequest("GET", "https://www.googleapis.com/oauth2/v3/userinfo?access_token="+ token.AccessToken, nil)
-	// req.Header.Set("Authorization", "Bearer " + token.AccessToken)
-	// response, err := client.Do(req)
-	// fmt.Println(response)
-	
-	response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
-	fmt.Println(response)
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", "https://api.github.com/user", nil)
+	req.Header.Set("Authorization", "token " + token.AccessToken)
+	response, err := client.Do(req)
+
 	if err != nil {
 		return nil, fmt.Errorf("failed getting user info: %s", err.Error())
 	}
 	defer response.Body.Close()
 	contents, err := ioutil.ReadAll(response.Body)
+
+	userinfo := new(model.UserGithub)
+	json.Unmarshal([]byte(string(contents)), &userinfo)
+
+	user := model.User{ Username: userinfo.Login, Email: userinfo.Email, Access_token: token.AccessToken}
+	db := db.DbManager()
+	db.Create(&user)
+
 	if err != nil {
 		return nil, fmt.Errorf("failed reading response body: %s", err.Error())
 	}
