@@ -37,7 +37,7 @@ CREATE TABLE `carts` (
   KEY `idx_carts_deleted_at` (`deleted_at`),
   CONSTRAINT `fk_carts_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
   CONSTRAINT `fk_carts_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46,7 +46,6 @@ CREATE TABLE `carts` (
 
 LOCK TABLES `carts` WRITE;
 /*!40000 ALTER TABLE `carts` DISABLE KEYS */;
-INSERT INTO `carts` VALUES (24,'2022-05-20 17:54:40.869','2022-05-20 17:54:40.869','2022-05-20 17:54:43.546',2,1);
 /*!40000 ALTER TABLE `carts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -66,7 +65,7 @@ CREATE TABLE `categories` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `idx_categories_deleted_at` (`deleted_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -99,7 +98,7 @@ CREATE TABLE `products` (
   KEY `fk_products_category` (`category_id`),
   KEY `idx_products_deleted_at` (`deleted_at`),
   CONSTRAINT `fk_products_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -126,10 +125,13 @@ CREATE TABLE `users` (
   `deleted_at` datetime(3) DEFAULT NULL,
   `username` varchar(191) DEFAULT NULL,
   `password_hash` longtext,
+  `email` varchar(45) DEFAULT NULL,
+  `access_token` longtext,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email_UNIQUE` (`email`),
   KEY `idx_users_deleted_at` (`deleted_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,7 +140,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'2022-05-08 15:15:15.014','2022-05-08 15:15:15.014',NULL,'Ala','$2a$10$FSFY9.LNWLM4pXvbuiOhoOM/xuryuYsPioRmRB7pEFxWvL8aJ.rf6'),(3,'2022-05-08 15:15:49.652','2022-05-08 15:15:49.652',NULL,'Ola','$2a$10$1/tUWds5NJwSAtH/gHcSPuOdeWiJV4Hj9.Ht9QrTNXyhJtE2oF3Se'),(4,'2022-05-08 15:20:18.895','2022-05-08 15:20:18.895',NULL,'Ela','$2a$10$COWMsjaJ8oXRE5smMub/r.Wbd2KC7RufzwQtxk8gCTW0mM7HDQjFi'),(5,'2022-05-08 15:20:52.291','2022-05-08 15:20:52.291',NULL,'Tom','$2a$10$Fw0ZZrLZ1JtQHt/FqtEYEOCYU7qCFVWCPj5NyrkYerYFxbjumCWOS'),(6,'2022-05-08 15:40:58.622','2022-05-08 15:40:58.622',NULL,'Bob','$2a$10$luetcjAVaGihmkk8ue.m6.d7SL1ssR2TJkaScJbMVfz0RwMoxsWgm');
+INSERT INTO `users` VALUES (1,'2022-05-08 15:15:15.014','2022-05-08 15:15:15.014',NULL,'Ala','$2a$10$FSFY9.LNWLM4pXvbuiOhoOM/xuryuYsPioRmRB7pEFxWvL8aJ.rf6',NULL,NULL),(3,'2022-05-08 15:15:49.652','2022-05-08 15:15:49.652',NULL,'Ola','$2a$10$1/tUWds5NJwSAtH/gHcSPuOdeWiJV4Hj9.Ht9QrTNXyhJtE2oF3Se',NULL,NULL),(4,'2022-05-08 15:20:18.895','2022-05-08 15:20:18.895',NULL,'Ela','$2a$10$COWMsjaJ8oXRE5smMub/r.Wbd2KC7RufzwQtxk8gCTW0mM7HDQjFi',NULL,NULL),(5,'2022-05-08 15:20:52.291','2022-05-08 15:20:52.291',NULL,'Tom','$2a$10$Fw0ZZrLZ1JtQHt/FqtEYEOCYU7qCFVWCPj5NyrkYerYFxbjumCWOS',NULL,NULL),(6,'2022-05-08 15:40:58.622','2022-05-08 15:40:58.622',NULL,'Bob','$2a$10$luetcjAVaGihmkk8ue.m6.d7SL1ssR2TJkaScJbMVfz0RwMoxsWgm',NULL,NULL),(39,'2022-05-30 15:57:38.832','2022-05-30 15:57:38.832',NULL,'VenetianDevil','','','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'),(76,'2022-05-31 16:21:03.188','2022-05-31 16:21:03.188',NULL,'rolcia07@gmail.com','','rolcia07@gmail.com','ya29.a0ARrdaM_NH7eApNOiRkgmvayJYE5HB34l65tryFlxRuQPCjfUX_ocOFrTxdaKamCZrrpbrv9ZMyWC1JVOif9NCi_6JTVKPDFnyN8bF2hyk3sa4ubwRqI2HaoJ2F_YQ4-mdoHadDiAfntEom8JPcRSnVPpZaHN');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -162,7 +164,7 @@ CREATE TABLE `wish_lists` (
   KEY `fk_wish_lists_user` (`user_id`),
   CONSTRAINT `fk_wish_lists_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
   CONSTRAINT `fk_wish_lists_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -192,4 +194,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-05-20 18:02:06
+-- Dump completed on 2022-05-31 16:48:54

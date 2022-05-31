@@ -15,7 +15,6 @@ type User struct {
 	PasswordHash string
 	Email				 string
 	Access_token string
-	Jwt					 string
 }
 
 // HashPassword : Hash Password
