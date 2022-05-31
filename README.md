@@ -56,3 +56,13 @@ run project and ngrok to listen for post requests from slack commands
 ```
 ngrok http 8080
 ```
+
+# cypress
+from main dir
+```
+export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}'):0.0
+npx cypress open
+```
+
+# sonar cloud
+https://sonarcloud.io/project/overview?id=VenetianDevil_UJ_E-biznes

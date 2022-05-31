@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 function Logout(props) {
 
-  const [isLoggedIn, login, logout, currentUserValue] = useAuth();
+  const {isLoggedIn, logout, currentUserValue} = useAuth();
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {

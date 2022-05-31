@@ -15,7 +15,6 @@ function Products() {
         .then((data) => {
           setLoading(false);
           setProducts([...products, ...data]);
-          console.log(products);
         })
     }
 
@@ -28,7 +27,6 @@ function Products() {
     return (<LoaderComponent></LoaderComponent>)
   }
 
-  console.log(products);
   return (
     <Row >
       {products.map(product => <ProductComponent key={product.ID} product={product}></ProductComponent>)}

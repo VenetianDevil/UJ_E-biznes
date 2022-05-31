@@ -8,7 +8,7 @@ export default function CartButtonComponent(props) {
 
   const [isLoading, setLoading] = useState(false);
   const product = props.product;
-  const [productID, setProductId, getCart, addToCart] = useCart(product.ID);
+  const { addToCart } = useCart(product.ID);
 
   async function handleClick(e) {
     e.preventDefault();

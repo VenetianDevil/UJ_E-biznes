@@ -5,7 +5,7 @@ import { LoaderComponent } from './LoaderComponent';
 import usePayment from '../_hooks/usePayment';
 import { useNavigate } from "react-router-dom";
 
-export default function PaymentButtonComponent(props) {
+export default function PaymentButtonComponent() {
 
   let navigate = useNavigate();
   const [isLoading, setLoading] = useState(false);
@@ -15,7 +15,7 @@ export default function PaymentButtonComponent(props) {
     e.preventDefault();
     setLoading(true);
     await orderAndPay(1)
-      .then((data) => {
+      .then(() => {
         setLoading(false);
         navigate("ordered")
       })

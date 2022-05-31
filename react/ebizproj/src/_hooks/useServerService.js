@@ -1,6 +1,5 @@
 function useServerService() {
   async function request(method, url, data) {
-    console.log('gonna fetch')
 
     try {
       const response = await fetch(url, {
@@ -12,7 +11,6 @@ function useServerService() {
       })
         .then((res) => res.json())
         .then((res) => {
-          // console.log(res)
           if (res.message) {
             console.info(res.message);
           }

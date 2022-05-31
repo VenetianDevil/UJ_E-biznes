@@ -8,12 +8,6 @@ var currentUser;
 function useAuth() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-  if (localStorage.getItem('currentUser') === '' || localStorage.getItem('currentUser') === 'undefined') {
-    console.log('\tremoving item');
-    localStorage.removeItem('currentUser');
-    currentUserSubject.next(null);
-  }
-
   useEffect(() => {
     console.log("-------------------------------------- auth effect ----------------------------------------");
 
@@ -27,45 +21,46 @@ function useAuth() {
       } else {
         console.log("nie mam currenUsera w localStorage / wylogowany");
       }
-      
+
       console.log(currentUser);
     } else {
       console.log('auth, logged in', isLoggedIn);
     }
-    
+
   }, [isLoggedIn])
-  
+
   function login(user) {
     console.log("-------------------------------------- LOGIN ----------------------------------------");
-    if (!!user && !isLoggedIn && !currentUserSubject) {
-      console.log('\tauth login proceed');
-      localStorage.setItem('currentUser', JSON.stringify(user));
-      currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('currentUser')));
-      currentUserSubject.next(user);
-      setIsLoggedIn(true);
+    if (!!user) {
+      if (!currentUserSubject) {
+        console.log('\tauth login proceed');
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('currentUser')));
+        currentUserSubject.next(user);
+        setIsLoggedIn(true);
+      } else {
+        NotificationManager.info("Alredy logged", 'Error!');
+      }
     } else {
       NotificationManager.error("No user data to log in", 'Error!');
     }
-  };
-  
+  }
+
   function currentUserValue() {
     console.log("-------------------------------------- CURENT USER VALUE ----------------------------------------");
-    
     console.log(currentUserSubject);
-    console.log(currentUser);
-    console.log(isLoggedIn);
-    
-    return currentUserSubject && currentUserSubject.value ? currentUserSubject.value : null;
+
+    return currentUserSubject ? currentUserSubject.value : null;
   }
-  
+
   function logout() {
     console.log("-------------------------------------- LOGOUT ----------------------------------------");
     localStorage.removeItem('currentUser');
     currentUserSubject.next(null);
     setIsLoggedIn(false)
-  };
+  }
 
-  return [isLoggedIn, login, logout, currentUserValue];
+  return { isLoggedIn, login, logout, currentUserValue };
 }
 
 export default useAuth;

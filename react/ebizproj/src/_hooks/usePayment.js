@@ -8,7 +8,7 @@ function usePayment() {
     console.log('u orderAndPay');
 
     return request('POST', `${environment.serverUrl}/payment/${uid}`);
-  };
+  }
 
   return [orderAndPay];
 }

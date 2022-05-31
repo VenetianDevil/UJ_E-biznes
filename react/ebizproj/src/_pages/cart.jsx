@@ -6,7 +6,7 @@ import useCart from '../_hooks/useCart';
 import PaymentButtonComponent from '../_components/PaymentButtonComponent';
 
 function Cart() {
-  const [productID, setProductId, getCart, addToCart] = useCart();
+  const { getCart } = useCart();
   const [isLoading, setLoading] = useState(true);
   const [items, setProducts] = useState([])
 

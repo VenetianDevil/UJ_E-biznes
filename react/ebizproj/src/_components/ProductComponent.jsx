@@ -17,8 +17,6 @@ export class ProductComponent extends React.Component {
 
   render() {
     const { product, cannotAddToCart, isLoading } = this.state;
-    // console.log('admin', admin);
-    // console.log(product)
 
     if (isLoading) {
       return (<LoaderComponent></LoaderComponent>)

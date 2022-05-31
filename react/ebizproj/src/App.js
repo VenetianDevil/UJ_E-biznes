@@ -22,8 +22,8 @@ function App() {
   const [currentUrl, setCurrentUrl] = useState(useLocation().pathname);
   const handleSelect = (href) => { setCurrentUrl(href) };
 
-  const [isLoggedIn, login, logout, currentUserValue] = useAuth();
-  const [refresh, forceRefresh] = useState();
+  const {currentUserValue} = useAuth();
+  const [_refresh, forceRefresh] = useState();
 
   return (
     <div className="App">
@@ -39,7 +39,7 @@ function App() {
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Nav className='ms-auto' activeKey={currentUrl} onSelect={handleSelect}>
                 <Navbar.Collapse id="basic-navbar-nav" >
-                  {currentUserValue() ? <Navbar.Text>{currentUserValue() ? currentUserValue().Username : ''} </Navbar.Text> : null}
+                  {currentUserValue() ? <Navbar.Text>{currentUserValue().Username} </Navbar.Text> : null}
                   <Nav.Link href="/products">Products</Nav.Link>
                   <Nav.Link href="/cart">Cart</Nav.Link>
                   {!currentUserValue() ? <Nav.Link href="/signin">Sign in</Nav.Link> : null}
