@@ -58,6 +58,11 @@ ngrok http 8080
 ```
 
 # cypress
+requires WSL2 (but React works better on WSL1, on WSL2 there is problem with auto recompiling)
+```
+wsl --set-version Ubuntu-18.04 2
+```
+
 from main dir
 ```
 export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}'):0.0
