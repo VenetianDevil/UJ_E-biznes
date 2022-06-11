@@ -1,3 +1,9 @@
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=VenetianDevil_UJ_E-biznes&metric=bugs)](https://sonarcloud.io/summary/new_code?id=VenetianDevil_UJ_E-biznes)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=VenetianDevil_UJ_E-biznes&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=VenetianDevil_UJ_E-biznes)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=VenetianDevil_UJ_E-biznes&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=VenetianDevil_UJ_E-biznes)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=VenetianDevil_UJ_E-biznes&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=VenetianDevil_UJ_E-biznes)
+
+
 ```
 npm i
 ```
@@ -68,6 +74,3 @@ from main dir
 export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}'):0.0
 npx cypress open
 ```
-
-# sonar cloud
-https://sonarcloud.io/project/overview?id=VenetianDevil_UJ_E-biznes
