@@ -29,6 +29,7 @@ jobs:
     - name: Build and push container image to registry
       uses: docker/build-push-action@v2
       with:
+        context: ./react/ebizproj
         push: true
         tags: ebiznes1.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_a9ffbf2b19ef46fe824e080ca2ab9ed7 }}/front:${{ github.sha }}
         file: ./Dockerfile
