@@ -1,14 +1,16 @@
+# SonarCloud (VIII)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=VenetianDevil_UJ_E-biznes&metric=bugs)](https://sonarcloud.io/summary/new_code?id=VenetianDevil_UJ_E-biznes)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=VenetianDevil_UJ_E-biznes&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=VenetianDevil_UJ_E-biznes)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=VenetianDevil_UJ_E-biznes&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=VenetianDevil_UJ_E-biznes)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=VenetianDevil_UJ_E-biznes&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=VenetianDevil_UJ_E-biznes)
 
+# Azure + GithubActions (IX)
+at the moment only react deploy
 
-```
-npm i
-```
+https://ebiz.azurewebsites.net/products
 
-# Docker
+
+# Docker (I)
 with Dockerfile
 ```
 docker build . -t user_name/ebiz:latest
@@ -47,7 +49,7 @@ then reload *# User specific environment and startup programs*
 source ~/.bash_profile
 ```
 
-# scala play crud
+# scala play crud (II)
 ```
 cd ebiz-play-scala-crud
 sbt run
@@ -56,14 +58,26 @@ sbt run
 localhost:9000
 
 
-# kotlin ktor slack bot
+# kotlin ktor slack bot (III)
 run project and ngrok to listen for post requests from slack commands
 
 ```
 ngrok http 8080
 ```
 
-# cypress
+# gorm (IV) + react (V) (backend + frontend) + Oauth2 in go app (VII)
+Backend gorm-echo works with react\ebizproj frontend and mySQL database (database.sql)
+
+Using WSL2 check the host IP
+```
+export WSL_HOST_IP=$(awk '/nameserver/ { print $2 }' /etc/resolv.conf)
+echo $WSL_HOST_IP
+```
+end put in in the gorm-echo/config/config.json file under DB_HOST.
+
+If you are using WSL1 then just use 127.0.0.1.
+
+# cypress (VI)
 requires WSL2 (but React works better on WSL1, on WSL2 there is problem with auto recompiling)
 ```
 wsl --set-version Ubuntu-18.04 2

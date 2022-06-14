@@ -2,7 +2,7 @@
   "DB_USERNAME": "student",
   "DB_PASSWORD": "SuperUJ",
   "DB_PORT": "3306",
-  "DB_HOST": "172.29.192.1",
+  "DB_HOST": "172.24.240.1",
   "DB_NAME": "ebizproject"
 
 }
