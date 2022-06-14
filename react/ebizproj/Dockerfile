@@ -8,7 +8,7 @@ COPY package*.json ./
 
 ADD package.json /usr/src/app/package.json
 
-RUN npm install
+RUN npm install --force
 
 # Bundle app source
 
