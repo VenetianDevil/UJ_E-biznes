@@ -24,13 +24,21 @@ function Products() {
   }, [isLoading, getProducts, products])
 
   if (!!isLoading) {
-    return (<LoaderComponent></LoaderComponent>)
+    return (
+    <div>
+      <h2>Products</h2>
+      <LoaderComponent></LoaderComponent>
+    </div>
+    )
   }
 
   return (
-    <Row >
-      {products.map(product => <ProductComponent key={product.ID} product={product}></ProductComponent>)}
-    </Row>
+    <div>
+      <h2>Products</h2>
+      <Row >
+        {products.map(product => <ProductComponent key={product.ID} product={product}></ProductComponent>)}
+      </Row>
+    </div>
   )
 }
 

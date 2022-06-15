@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  serverUrl: 'http://localhost:1323',
+  serverUrl: 'https://ebiz-api.azurewebsites.net',
 };
