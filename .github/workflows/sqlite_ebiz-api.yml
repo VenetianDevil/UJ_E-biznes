@@ -29,9 +29,10 @@ jobs:
     - name: Build and push container image to registry
       uses: docker/build-push-action@v2
       with:
+        context: ./gorm-echo
         push: true
         tags: ebiznes1.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_2b0b847a40e342de88c39597c1da5814 }}/api:${{ github.sha }}
-        file: ./Dockerfile
+        file: ./gorm-echo/Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
