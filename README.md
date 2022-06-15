@@ -5,7 +5,8 @@
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=VenetianDevil_UJ_E-biznes&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=VenetianDevil_UJ_E-biznes)
 
 # Azure + GithubActions (IX)
-at the moment only react deploy
+react and go app with sqlite deployed
++ logging not working here yet, need to change redirections in settings
 
 https://ebiz.azurewebsites.net/products
 
@@ -65,7 +66,7 @@ run project and ngrok to listen for post requests from slack commands
 ngrok http 8080
 ```
 
-# gorm (IV) + react (V) (backend + frontend) + Oauth2 in go app (VII)
+# gorm (IV) + react (V) (backend + frontend --> go to IX to see that they work together) + Oauth2 in go app (VII)
 Backend gorm-echo works with react\ebizproj frontend and mySQL database (database.sql)
 
 Using WSL2 check the host IP
