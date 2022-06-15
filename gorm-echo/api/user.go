@@ -93,7 +93,7 @@ func OauthConfigInit() {
 	os.Setenv("GITHUB_CLIENT_SECRET", "18861bff981cb2a72f4371aabbd0eaae43543db0")
 
 	googleOauthConfig = &oauth2.Config{
-		RedirectURL:  "http://localhost:1323/auth/callback/google",
+		RedirectURL:  "https://ebiz-api.azurewebsites.net/auth/callback/google",
 		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
@@ -101,7 +101,7 @@ func OauthConfigInit() {
 	}
 
 	githubOauthConfig = &oauth2.Config{
-		RedirectURL:  "http://localhost:1323/auth/callback/github",
+		RedirectURL:  "https://ebiz-api.azurewebsites.net/auth/callback/github",
 		ClientID:     os.Getenv("GITHUB_CLIENT_ID"),
 		ClientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),
 		Scopes:       []string{"https://github.com/login/oauth/access_token"},
@@ -120,7 +120,7 @@ func HandleGoogleCallback(c echo.Context) error {
 	
 	if err != nil {
 		fmt.Println(err.Error())
-		c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000/");
+		c.Redirect(http.StatusTemporaryRedirect, "http://ebiz.azurewebsites.net/");
 	}
 	
 	userinfo := new(model.User)
@@ -141,7 +141,7 @@ func HandleGoogleCallback(c echo.Context) error {
 	cookieUser.Secure = true
 	c.SetCookie(cookieUser)
 	
-	return c.Redirect(http.StatusSeeOther, "http://localhost:3000/logged");
+	return c.Redirect(http.StatusSeeOther, "http://ebiz.azurewebsites.net/logged");
 }
 
 func HandleGithubLogin(c echo.Context) error {
@@ -155,7 +155,7 @@ func HandleGithubCallback(c echo.Context) error {
 	
 	if err != nil {
 		fmt.Println(err.Error())
-		c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000/");
+		c.Redirect(http.StatusTemporaryRedirect, "http://ebiz.azurewebsites.net/");
 	}
 
 	userinfo := new(model.UserGithub)
@@ -176,7 +176,7 @@ func HandleGithubCallback(c echo.Context) error {
 	cookieUser.Secure = true
 	c.SetCookie(cookieUser)
 	
-	return c.Redirect(http.StatusSeeOther, "http://localhost:3000/logged")
+	return c.Redirect(http.StatusSeeOther, "http://ebiz.azurewebsites.net/logged")
 }
 
 func getUserInfoGoogle(state string, code string) ([]byte, error) {
