@@ -6,7 +6,7 @@
 
 # Azure + GithubActions (IX)
 react and go app with sqlite deployed
-+ logging not working here yet, need to change redirections in settings
++ logging not working because of cookies, but you can see it's connected to github and google
 
 https://ebiz.azurewebsites.net/products
 
@@ -66,7 +66,7 @@ run project and ngrok to listen for post requests from slack commands
 ngrok http 8080
 ```
 
-# gorm (IV) + react (V) (backend + frontend --> go to IX to see that they work together) + Oauth2 in go app (VII)
+# gorm (IV) + react (V) (backend + frontend --> go to IX to see that they work together) + Oauth2 in go app (VII) 
 Backend gorm-echo works with react\ebizproj frontend and mySQL database (database.sql)
 
 Using WSL2 check the host IP
