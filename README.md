@@ -6,7 +6,8 @@
 
 # Azure + GithubActions (IX)
 react and go app with sqlite deployed
-+ logging not working because of cookies, but you can see it's connected to github and google
++ logging work (token passed in query)
++ payments work (stripe) test [4242 4242 4242 4242] - for success payment
 
 https://ebiz.azurewebsites.net/products
 
