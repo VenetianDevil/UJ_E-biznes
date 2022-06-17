@@ -4,20 +4,49 @@ import (
 	// "encoding/json"
 	"github.com/VenetianDevil/UJ_E-biznes/gorm-echo/db"
 	"github.com/VenetianDevil/UJ_E-biznes/gorm-echo/model"
+
 	"net/http"
 	"fmt"
 	"os"
 	"io/ioutil"
 	"encoding/json"
 	"time"
+	"strings"
+	"strconv"
 
 	"github.com/labstack/echo"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"golang.org/x/oauth2/github"
-
 )
+
+func authorizeUser(c echo.Context) error {
+	header := c.Request().Header
+	authv := header.Get("Authorization")
+	uid, _ := strconv.ParseUint(c.Param("uid"), 10, 32)
+
+	// Get bearer token
+	if !strings.HasPrefix(strings.ToLower(authv), "bearer") {
+		return c.NoContent(http.StatusUnauthorized)
+	}
+
+	values := strings.Split(authv, " ")
+	if len(values) < 2 {
+		return c.NoContent(http.StatusUnauthorized)
+	}
+
+	token := values[1]
+	user := model.UserClean{}
+	user.Jwt = token
+	user.VerifyToken()
+
+	if (uint(uid) == user.ID) {
+		return nil
+	}
+
+	return c.NoContent(http.StatusUnauthorized)
+}
 
 func GetUsers(c echo.Context) error {
 	db := db.DbManager()
@@ -126,11 +155,16 @@ func HandleGoogleCallback(c echo.Context) error {
 	userinfo := new(model.User)
 	json.Unmarshal([]byte(string(contents)), &userinfo)
 
-	user := model.UserClean{ Username: userinfo.Email, Email: userinfo.Email}
+	dbUser, err := doesUserAlreadyExist(userinfo.Email)
+	if err != nil {
+		fmt.Println(err.Error())
+		c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000/");
+	}
+
+	user := model.UserClean{ID: dbUser.ID, Username: userinfo.Email, Email: userinfo.Email}
 	user.GenerateToken()
 	
 	userStr, err := json.Marshal(user)
-	fmt.Println("clean user str", string(userStr))
 
 	cookieUser := new(http.Cookie)
 	cookieUser.Path = "/logged"
@@ -141,7 +175,7 @@ func HandleGoogleCallback(c echo.Context) error {
 	cookieUser.Secure = true
 	c.SetCookie(cookieUser)
 	
-	return c.Redirect(http.StatusSeeOther, "http://localhost:3000/logged");
+	return c.Redirect(http.StatusSeeOther, "http://localhost:3000/logged?token="+user.Jwt);
 }
 
 func HandleGithubLogin(c echo.Context) error {
@@ -150,22 +184,27 @@ func HandleGithubLogin(c echo.Context) error {
 }
 
 func HandleGithubCallback(c echo.Context) error {
-	fmt.Println("context", c.FormValue("state"), c.FormValue("code"))
+	// fmt.Println("context", c.FormValue("state"), c.FormValue("code"))
 	contents, err := getUserInfoGithub(c.FormValue("state"), c.FormValue("code"))
 	
 	if err != nil {
 		fmt.Println(err.Error())
 		c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000/");
 	}
-
+	
 	userinfo := new(model.UserGithub)
 	json.Unmarshal([]byte(string(contents)), &userinfo)
+	
+	dbUser, err := doesUserAlreadyExist(userinfo.Login)
+	if err != nil {
+		fmt.Println(err.Error())
+		c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000/");
+	}
 
-	user := model.UserClean{ Username: userinfo.Login, Email: userinfo.Email}
+	user := model.UserClean{ID: dbUser.ID, Username: userinfo.Login, Email: userinfo.Email}
 	user.GenerateToken()
 	
 	userStr, err := json.Marshal(user)
-	fmt.Println("clean user str", string(userStr))
 
 	cookieUser := new(http.Cookie)
 	cookieUser.Path = "/logged"
@@ -176,7 +215,7 @@ func HandleGithubCallback(c echo.Context) error {
 	cookieUser.Secure = true
 	c.SetCookie(cookieUser)
 	
-	return c.Redirect(http.StatusSeeOther, "http://localhost:3000/logged")
+	return c.Redirect(http.StatusSeeOther, "http://localhost:3000/logged?token="+user.Jwt)
 }
 
 func getUserInfoGoogle(state string, code string) ([]byte, error) {
@@ -195,17 +234,20 @@ func getUserInfoGoogle(state string, code string) ([]byte, error) {
 	}
 	defer response.Body.Close()
 	contents, err := ioutil.ReadAll(response.Body)
-
-	userinfo := new(model.User)
-	json.Unmarshal([]byte(string(contents)), &userinfo)
-
-	user := model.User{ Username: userinfo.Email, Email: userinfo.Email, Access_token: token.AccessToken	}
-	db := db.DbManager()
-	db.Create(&user)
-	
 	if err != nil {
 		return nil, fmt.Errorf("failed reading response body: %s", err.Error())
 	}
+
+	userinfo := new(model.User)
+	json.Unmarshal([]byte(string(contents)), &userinfo)
+	_, err = doesUserAlreadyExist(userinfo.Email)
+	if err != nil {
+	
+		user := model.User{ Username: userinfo.Email, Email: userinfo.Email, Access_token: token.AccessToken	}
+		db := db.DbManager()
+		db.Create(&user)
+	}
+	
 	return contents, nil
 }
 
@@ -229,16 +271,29 @@ func getUserInfoGithub(state string, code string) ([]byte, error) {
 	}
 	defer response.Body.Close()
 	contents, err := ioutil.ReadAll(response.Body)
-
-	userinfo := new(model.UserGithub)
-	json.Unmarshal([]byte(string(contents)), &userinfo)
-
-	user := model.User{ Username: userinfo.Login, Email: userinfo.Email, Access_token: token.AccessToken}
-	db := db.DbManager()
-	db.Create(&user)
-
 	if err != nil {
 		return nil, fmt.Errorf("failed reading response body: %s", err.Error())
 	}
+	
+	userinfo := new(model.UserGithub)
+	json.Unmarshal([]byte(string(contents)), &userinfo)
+	_, err = doesUserAlreadyExist(userinfo.Login)
+	if err != nil {
+	
+		user := model.User{ Username: userinfo.Login, Email: userinfo.Email, Access_token: token.AccessToken}
+		db := db.DbManager()
+		db.Create(&user)
+	}
+
 	return contents, nil
+}
+
+func doesUserAlreadyExist(username string) (*model.User, error) {
+	db := db.DbManager()
+	dbUser := model.User{}
+	if err := db.Find(&dbUser, "Username=?", username).Error; err != nil {
+		return nil, err
+	}
+	
+	return &dbUser, nil
 }
