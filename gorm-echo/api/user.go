@@ -116,10 +116,10 @@ var (
 )
 
 func OauthConfigInit() {
-	os.Setenv("GOOGLE_CLIENT_ID", "99738054409-7ue2pmfbof68tp8b6behqdbpqbu7egb7.apps.googleusercontent.com")
-	os.Setenv("GOOGLE_CLIENT_SECRET", "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")
-	os.Setenv("GITHUB_CLIENT_ID", "860d09180e50a0ee1578")
-	os.Setenv("GITHUB_CLIENT_SECRET", "ecdb5f4a97c29c5961ea13688df43bfb39ba4cbb")
+	os.Setenv("GOOGLE_CLIENT_ID", "99738054409-qn160el7ichh2s6l3lqduogefh4rf1n6.apps.googleusercontent.com")
+	os.Setenv("GOOGLE_CLIENT_SECRET", "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")
+	os.Setenv("GITHUB_CLIENT_ID", "9f026e4f17827fd53a3b")
+	os.Setenv("GITHUB_CLIENT_SECRET", "18861bff981cb2a72f4371aabbd0eaae43543db0")
 
 	googleOauthConfig = &oauth2.Config{
 		RedirectURL:  "https://ebiz-api.azurewebsites.net/auth/callback/google",
