@@ -1,6 +1,7 @@
 import { React, useState } from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-notifications/lib/notifications.css';
 import {
   Routes,
   Route,
@@ -16,6 +17,7 @@ import Logged from './_pages/logged';
 import { NotificationContainer } from 'react-notifications';
 import useAuth from './_hooks/useAuth';
 import Logout from './_pages/logout';
+import Payment from './_pages/payment';
 
 function App() {
 
@@ -41,7 +43,7 @@ function App() {
                 <Navbar.Collapse id="basic-navbar-nav" >
                   {currentUserValue() ? <Navbar.Text>{currentUserValue().Username} </Navbar.Text> : null}
                   <Nav.Link href="/products">Products</Nav.Link>
-                  <Nav.Link href="/cart">Cart</Nav.Link>
+                  {currentUserValue() ? <Nav.Link href="/cart">Cart</Nav.Link> : null}
                   {!currentUserValue() ? <Nav.Link href="/signin">Sign in</Nav.Link> : null}
                   {currentUserValue() ? <Nav.Link href="logout">Logout</Nav.Link> : null}
                 </Navbar.Collapse>
@@ -58,6 +60,7 @@ function App() {
             <Route exact path='products' element={<Products />}> {/* isAdmin={isAdmin} */}</Route>
             <Route path="cart" element={<Cart />} />
             <Route path="cart/ordered" element={<OrderSummary></OrderSummary>} />
+            <Route path="cart/payment/:amount" element={<Payment></Payment>} />
             <Route path="signin" element={<SignIn />} />
             <Route path='logged' element={<Logged />} />
             <Route path='logout' element={<Logout callback={forceRefresh} />} />

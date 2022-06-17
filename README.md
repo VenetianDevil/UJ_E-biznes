@@ -65,8 +65,9 @@ run project and ngrok to listen for post requests from slack commands
 ```
 ngrok http 8080
 ```
+you need access-key to make it work, it's set as hidden global variable
 
-# gorm (IV) + react (V) (backend + frontend --> go to IX to see that they work together) + Oauth2 in go app (VII) 
+# gorm (IV) + react (V) (backend + frontend --> go to IX to see that they work together) + Oauth2 in GO server (VII) (fully works only on local version because of cookies, but you can see it's connected on deploy IX)
 Backend gorm-echo works with react\ebizproj frontend and mySQL database (database.sql)
 
 Using WSL2 check the host IP

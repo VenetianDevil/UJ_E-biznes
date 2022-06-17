@@ -14,7 +14,9 @@ func GetWishList(c echo.Context) error {
 	db := db.DbManager()
 	withlists := []model.WishList{}
 	uid := c.Param("uid")
-	
+
+	authorizeUser(c)
+
 	if err := db.Find(&withlists, "user_id = ?", uid).Error; err != nil {
 		panic(err)
 	}
@@ -33,6 +35,8 @@ func GetWishList(c echo.Context) error {
 func AddProdToWishList(c echo.Context) error {
 	fmt.Println("addWishList")
 	db := db.DbManager()
+	
+	authorizeUser(c)
 	
 	wishlist := new(model.WishList)
   if err := c.Bind(wishlist); err != nil {
@@ -69,6 +73,8 @@ func CleanWishlist(c echo.Context) error {
 	db := db.DbManager()
 	wishlists := []model.WishList{}
 	uid := c.Param("uid")
+
+	authorizeUser(c)
 	
 	if err := db.Unscoped().Delete(&wishlists, "user_id = ?", uid).Error; err != nil {
 		fmt.Println(err)

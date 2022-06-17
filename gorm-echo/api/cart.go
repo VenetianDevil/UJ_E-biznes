@@ -4,6 +4,7 @@ import (
 	// "encoding/json"
 	"github.com/VenetianDevil/UJ_E-biznes/gorm-echo/db"
 	"github.com/VenetianDevil/UJ_E-biznes/gorm-echo/model"
+
 	"net/http"
 	"fmt"
 
@@ -14,6 +15,8 @@ func GetCart(c echo.Context) error {
 	db := db.DbManager()
 	carts := []model.Cart{}
 	uid := c.Param("uid")
+
+	authorizeUser(c)
 	
 	if err := db.Find(&carts, "user_id = ?", uid).Error; err != nil {
 		panic(err)
@@ -33,6 +36,8 @@ func GetCart(c echo.Context) error {
 func AddProdToCart(c echo.Context) error {
 	fmt.Println("addCart")
 	db := db.DbManager()
+
+	authorizeUser(c)
 	
 	cart := new(model.Cart)
   if err := c.Bind(cart); err != nil {
@@ -69,6 +74,8 @@ func OrderAndPay(c echo.Context) error {
 	db := db.DbManager()
 	carts := []model.Cart{}
 	uid := c.Param("uid")
+
+	authorizeUser(c)
 	
 	if err := db.Unscoped().Delete(&carts, "user_id = ?", uid).Error; err != nil {
 		fmt.Println(err)

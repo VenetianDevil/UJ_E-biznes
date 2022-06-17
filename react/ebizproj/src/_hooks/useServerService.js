@@ -1,4 +1,8 @@
+import useAuth from './useAuth';
+
 function useServerService() {
+  const { currentUserValue } = useAuth();
+
   async function request(method, url, data) {
 
     try {
@@ -7,6 +11,7 @@ function useServerService() {
         body: JSON.stringify(data),
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': 'bearer ' + (!!currentUserValue() ? currentUserValue().token : ''),
         }
       })
         .then((res) => res.json())
