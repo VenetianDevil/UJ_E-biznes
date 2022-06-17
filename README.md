@@ -68,8 +68,9 @@ ngrok http 8080
 ```
 you need access-key to make it work, it's set as hidden global variable
 
-# gorm (IV) + react (V) (backend + frontend --> go to IX to see that they work together) + Oauth2 in GO server (VII) (fully works only on local version because of cookies, but you can see it's connected on deploy IX)
+# gorm (IV) + react (V) (backend + frontend --> go to IX to see that they work together) + Oauth2 in GO server (VII)
 Backend gorm-echo works with react\ebizproj frontend and mySQL database (database.sql)
++ Logging locally works with cookies, on deploy changed to query
 
 Using WSL2 check the host IP
 ```
