@@ -4,8 +4,8 @@ import (
 	"github.com/VenetianDevil/UJ_E-biznes/gorm-echo/model"
 
 	"github.com/jinzhu/gorm"
-	// _ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
+
 	// "database/sql"
   // "gorm.io/driver/mysql"
   // "gorm.io/gorm"

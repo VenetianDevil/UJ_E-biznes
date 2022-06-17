@@ -4,13 +4,19 @@ import useServerService from './useServerService';
 function usePayment() {
   const [request] = useServerService()
 
-  function orderAndPay(uid) {
-    console.log('u orderAndPay');
+  function placeOrder(uid) {
+    console.log('u placeOrder');
 
-    return request('POST', `${environment.serverUrl}/payment/${uid}`);
+    return request('POST', `${environment.serverUrl}/order/${uid}`);
   }
 
-  return [orderAndPay];
+  function getSecret(amount) {
+    console.log('u getSecret');
+
+    return request('GET', `${environment.serverUrl}/secret/${amount*100}`);
+  }
+
+  return { placeOrder, getSecret };
 }
 
 export default usePayment;

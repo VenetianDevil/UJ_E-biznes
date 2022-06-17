@@ -13,9 +13,9 @@ function useCart(pid) {
   }
 
   function addToCart(uid) {
-    console.log('u addToCart', productID);
+    console.log('u addToCart', productID, uid);
 
-    return request('POST', `${environment.serverUrl}/cart`, { ProductID: productID, UserID: uid });
+    return request('POST', `${environment.serverUrl}/cart/${uid}`, { ProductID: productID, UserID: uid });
   }
 
   return {productID, setProductId, getCart, addToCart};

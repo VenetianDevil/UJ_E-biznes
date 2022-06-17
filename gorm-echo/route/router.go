@@ -31,19 +31,21 @@ func Init() *echo.Echo {
 	e.POST("/categories", api.AddCategory)
 	e.DELETE("/categories/:cid", api.DeleteCategory)
 
-	e.GET("/cart/:uid", api.GetCart)
-	e.POST("/cart", api.AddProdToCart)
+	e.GET("/cart/:uid", api.GetCart)	//auth
+	e.POST("/cart/:uid", api.AddProdToCart) //auth
 	
-	e.POST("/payment/:uid", api.OrderAndPay)
+	e.POST("/order/:uid", api.OrderAndPay)	//auth
 
-	e.GET("/wishlist/:uid", api.GetWishList)
-	e.POST("/wishlist", api.AddProdToWishList)
-	e.DELETE("/wishlist/:uid", api.CleanWishlist)
+	e.GET("/wishlist/:uid", api.GetWishList)	//auth
+	e.POST("/wishlist/:uid", api.AddProdToWishList)	//auth
+	e.DELETE("/wishlist/:uid", api.CleanWishlist)	//auth
 
 	e.GET("/auth/login/google", api.HandleGoogleLogin)
 	e.GET("/auth/callback/google", api.HandleGoogleCallback)
 	e.GET("/auth/login/github", api.HandleGithubLogin)
 	e.GET("/auth/callback/github", api.HandleGithubCallback)
+	
+	e.GET("/secret/:amount", api.GetClientSecret)
 
 	return e
 }

@@ -6,6 +6,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/jinzhu/gorm v1.9.16
 	github.com/labstack/echo v3.3.10+incompatible
+	github.com/stripe/stripe-go/v72 v72.114.0
 	github.com/tkanos/gonfig v0.0.0-20210106201359-53e13348de2f
 	golang.org/x/crypto v0.0.0-20210920023735-84f357641f63
 	golang.org/x/oauth2 v0.0.0-20220524215830-622c5d57e401
