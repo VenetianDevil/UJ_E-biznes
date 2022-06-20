@@ -1,23 +1,61 @@
 describe('CLEAN user cart', () => {
-  it('clean cart', () => {
+  it('unauthorized', () => {
+    cy.request({
+      method: 'POST',
+      failOnStatusCode: false,
+      url: `http://localhost:1323/order/${Cypress.env('testUserId')}`,
 
-    cy.request('POST', `http://localhost:1323/payment/${Cypress.env('testUserId')}`)
-      .then((resp) => {
-        expect(resp.status).to.eq(200);
-      })
+    }).then((resp) => {
+      expect(resp.status).to.eq(401);
+    })
 
   })
+
+  it('clean cart', () => {
+
+    cy.request({
+      method: 'POST',
+      auth: {
+        'bearer': Cypress.env('testUserToken')
+      },
+      url: `http://localhost:1323/order/${Cypress.env('testUserId')}`,
+
+    }).then((resp) => {
+      expect(resp.status).to.eq(200);
+    })
+
+  })
+ 
 })
 
 describe('CLEAN user wishlist', () => {
-  it('clean wishlist', () => {
+  it('unauthorized', () => {
+    cy.request({
+      method: 'DELETE',
+      failOnStatusCode: false,
+      url: `http://localhost:1323/wishlist/${Cypress.env('testUserId')}`,
 
-    cy.request('DELETE', `http://localhost:1323/wishlist/${Cypress.env('testUserId')}`)
-      .then((resp) => {
-        expect(resp.status).to.eq(200);
-      })
+    }).then((resp) => {
+      expect(resp.status).to.eq(401);
+    })
 
   })
+
+  it('clean wishlist', () => {
+
+    cy.request({
+      method: 'DELETE',
+      auth: {
+        'bearer': Cypress.env('testUserToken')
+      },
+      url: `http://localhost:1323/wishlist/${Cypress.env('testUserId')}`,
+
+    }).then((resp) => {
+      expect(resp.status).to.eq(200);
+    })
+
+  })
+
 })
 
 describe('DELETE product', () => {
