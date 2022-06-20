@@ -1,33 +1,71 @@
 describe('POST cart', () => {
-  it('add to cart', () => {
-    // cy.visit('http://localhost:3000')
+  it('unauthorized', () => {
 
-    cy.request('POST', 'http://localhost:1323/cart', {
-      "ProductID": Cypress.env('testProdId'),
-      "UserID": Cypress.env('testUserId'),
+    cy.request({
+      method: 'POST',
+      failOnStatusCode: false,
+      url: `http://localhost:1323/cart/${Cypress.env('testUserId')}`,
+      body: {
+        "ProductID": Cypress.env('testProdId'),
+        "UserID": Cypress.env('testUserId'),
+      }
+    }).then((resp) => {
+      expect(resp.status).to.eq(401)
     })
-      .then((resp) => {
-        expect(resp.status).to.eq(200)
-        expect(resp.body).to.have.property('ID');
-        expect(resp.body).to.have.property('User');
-        expect(resp.body).to.have.property('Product');
-      })
+  })
+
+  it('add to cart', () => {
+
+    cy.request({
+      method: 'POST',
+      auth: {
+        'bearer': Cypress.env('testUserToken')
+      },
+      url: `http://localhost:1323/cart/${Cypress.env('testUserId')}`,
+      body: {
+        "ProductID": Cypress.env('testProdId'),
+        "UserID": Cypress.env('testUserId'),
+      }
+    }).then((resp) => {
+      expect(resp.status).to.eq(200)
+      expect(resp.body).to.have.property('ID');
+      expect(resp.body).to.have.property('User');
+      expect(resp.body).to.have.property('Product');
+    })
   })
 })
 
 describe('GET cart by user id', () => {
+  it('unauthorized', () => {
+
+    cy.request({
+      method: 'GET',
+      failOnStatusCode: false,
+      url: `http://localhost:1323/cart/${Cypress.env('testUserId')}`,
+
+    }).then((resp) => {
+      expect(resp.status).to.eq(401);
+    })
+
+  })
   it('get cart', () => {
 
-    cy.request('GET', `http://localhost:1323/cart/${Cypress.env('testUserId')}`)
-      .then((resp) => {
-        expect(resp.status).to.eq(200);
+    cy.request({
+      method: 'GET',
+      auth: {
+        'bearer': Cypress.env('testUserToken')
+      },
+      url: `http://localhost:1323/cart/${Cypress.env('testUserId')}`,
 
-        let testCart = resp.body.slice(-1)[0];
-        expect(testCart.ProductID).to.eq( Cypress.env('testProdId'));
-        expect(testCart.UserID).to.eq( Cypress.env('testUserId'));
-        expect(testCart).to.have.property('User');
-        expect(testCart).to.have.property('Product');
-      })
+    }).then((resp) => {
+      expect(resp.status).to.eq(200);
+
+      let testCart = resp.body.slice(-1)[0];
+      expect(testCart.ProductID).to.eq(Cypress.env('testProdId'));
+      expect(testCart.UserID).to.eq(Cypress.env('testUserId'));
+      expect(testCart).to.have.property('User');
+      expect(testCart).to.have.property('Product');
+    })
 
   })
 })

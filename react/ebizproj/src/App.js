@@ -45,7 +45,7 @@ function App() {
                   <Nav.Link href="/products">Products</Nav.Link>
                   {currentUserValue() ? <Nav.Link href="/cart">Cart</Nav.Link> : null}
                   {!currentUserValue() ? <Nav.Link href="/signin">Sign in</Nav.Link> : null}
-                  {currentUserValue() ? <Nav.Link href="logout">Logout</Nav.Link> : null}
+                  {currentUserValue() ? <Nav.Link href="/logout">Logout</Nav.Link> : null}
                 </Navbar.Collapse>
               </Nav>
             </Nav>

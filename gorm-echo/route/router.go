@@ -40,6 +40,8 @@ func Init() *echo.Echo {
 	e.POST("/wishlist/:uid", api.AddProdToWishList)	//auth
 	e.DELETE("/wishlist/:uid", api.CleanWishlist)	//auth
 
+	e.POST("/auth/signin", api.SignUserIn)
+	e.POST("/auth/login", api.LogUserIn)
 	e.GET("/auth/login/google", api.HandleGoogleLogin)
 	e.GET("/auth/callback/google", api.HandleGoogleCallback)
 	e.GET("/auth/login/github", api.HandleGithubLogin)

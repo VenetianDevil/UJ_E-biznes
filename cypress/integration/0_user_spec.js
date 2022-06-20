@@ -9,9 +9,11 @@ describe('POST user', () => {
       .then((resp) => {
         expect(resp.status).to.eq(200)
         expect(resp.body).to.have.property('ID');
+        expect(resp.body).to.have.property('Jwt');
 
         let testUser = resp.body;
         Cypress.env('testUserId', testUser.ID);
+        Cypress.env('testUserToken', testUser.Jwt);
       })
   })
 
