@@ -61,3 +61,8 @@ main{
 button{
   position: relative !important;
 }
+
+/* -------------- notifications -------------------------- */
+.notification-container {
+  left: 0;
+}

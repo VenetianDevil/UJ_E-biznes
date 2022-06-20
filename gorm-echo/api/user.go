@@ -62,13 +62,13 @@ func GetUsers(c echo.Context) error {
 	return c.JSON(http.StatusOK, users)
 }
 
-func AddUser(c echo.Context) error {
+func createUser(c echo.Context) (error, *model.UserClean) {
 	db := db.DbManager()
 	
 	user := new(model.User)
   if err := c.Bind(user); err != nil {
 		fmt.Println(err)
-		return c.JSON(http.StatusBadRequest, user)
+		return c.JSON(http.StatusBadRequest, user), nil
   }
 	
 	user.HashPassword()
@@ -77,11 +77,23 @@ func AddUser(c echo.Context) error {
 	
 	if result.Error != nil {
 		fmt.Println(result.Error)
-		return c.NoContent(http.StatusConflict)
+		return c.NoContent(http.StatusConflict), nil
 	}
+
+	userClean := model.UserClean{ID: user.ID, Username: user.Username, Email: user.Email}
+	userClean.GenerateToken()	
+
+	return nil, &userClean
+}
+
+// sign in new user
+func AddUser(c echo.Context) (error) {
+	response, user := createUser(c)
 	
-	fmt.Println(user.ID)  
-	
+	if (response != nil) {
+		return response
+	}
+
   return c.JSON(http.StatusOK, user)
 }
 
@@ -105,6 +117,47 @@ func DeteleUser(c echo.Context) error {
 	// spew.Dump(json.Marshal(carts))
 	// return c.JSON(http.StatusOK, carts)
 	return c.NoContent(http.StatusOK)
+}
+
+// ------------------------- Logowanie tradycyjne ----------
+
+func SignUserIn(c echo.Context) error {
+
+	response, user := createUser(c)
+
+	if (response != nil) {
+		return response
+	}
+
+	return c.JSON(http.StatusOK, user);
+}
+
+func LogUserIn(c echo.Context) error {
+	db := db.DbManager()
+	
+	user := new(model.User)
+  if err := c.Bind(user); err != nil {
+		fmt.Println(err)
+		return c.NoContent(http.StatusBadRequest)
+  }
+		
+	userdb := new(model.User)
+	response := db.Where("username = ?", user.Username ).First(&userdb);
+	if err := response.Error; err != nil {
+		// panic(err)
+		fmt.Println(err)
+		return c.NoContent(http.StatusNotFound)
+	}
+		
+	err := userdb.CompareHashedPassword(user.PasswordHash)
+	if err != nil {
+		return c.NoContent(http.StatusBadRequest)
+	}
+	
+	userClean := model.UserClean{ID: userdb.ID, Username: userdb.Username, Email: userdb.Email}
+	userClean.GenerateToken()
+	
+	return c.JSON(http.StatusOK, userClean);
 }
 
 // -------------------------- OAuth2 ------------------------
